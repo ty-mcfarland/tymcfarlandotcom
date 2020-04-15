@@ -1,0 +1,19 @@
+{
+  "name": "tymcfarlandotcom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ty-mcfarland/tymcfarlandotcom.git"
+  },
+  "author": "Ty McFarland",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ty-mcfarland/tymcfarlandotcom/issues"
+  },
+  "homepage": "https://github.com/ty-mcfarland/tymcfarlandotcom#readme"
+}
