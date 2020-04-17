@@ -1,13 +1,126 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-# Orchestrate or schedule a set of jobs
+  node: circleci/node@1.1.6
+
+
+
+
+## WORKFLOW JOBS ##
+jobs:
+
+# DEPLOY JOB - Designate the desired docker image, install the AWS CLI, grab the cache set by the build job, deploy to s3 bucket #
+  deploy:
+    working_directory: ~/dist
+    docker:
+      - image: circleci/node:12-browsers
+        environment:
+          CHROME_BIN: "/usr/bin/google-chrome"
+    steps:
+      - checkout
+      # Restore local dependencies from cache
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - restore_cache:
+          keys:
+            - v1-dist-{{ checksum "package.json" }}
+            - v1-dist-
+      - run:
+          name: Deploy to Firebase
+          command: ./node_modules/.bin/firebase deploy --token "$FIREBASE_TOKEN" --only hosting
+    
+
+
+# BUILD JOB - Restores a cache if there is one, installs dependencies, build the application, set a new cache #
+  build:
+    working_directory: ~/dist
+    executor:
+      name: node/default
+    docker:
+      - image: circleci/node:12-browsers
+        environment:
+          CHROME_BIN: "/usr/bin/google-chrome"
+    steps:
+      - checkout
+      # Log the current branch
+      - run:
+          name: Echo current branch
+          command: echo ${CIRCLE_BRANCH}
+      # Restore local dependencies from cache
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+      - run:
+          name: Install product dependencies
+          command: npm install
+      # Build project with different configuration based on
+      # the current branch
+      - run:
+          name: Building
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  npm run build:prod
+              else
+                  npm run build
+              fi
+      # Cache the node_modules folder for the deploy job
+      - save_cache:
+          key: v1-dependencies-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+              - node_modules
+      # Cache the dist folder for the deploy job
+      - save_cache:
+          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+              - dist
+
+# TEST JOB - Designate and configure the desired docker image, checkout the branch, and run unit tests on ChromeHeadless #
+  # test:
+  #   executor:
+  #     name: node/default
+  #   docker:
+  #     - image: circleci/node:12-browsers
+  #       environment:
+  #         CHROME_BIN: "/usr/bin/google-chrome"
+  #   steps:
+  #     - checkout
+  #     - node/with-cache:
+  #         steps:
+  #           - run: npm test --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+
+
+
+## WORKFLOWS ##
+# workflows:
+#   version: 2
+
+#   # BUILD-AND-TEST WORKFLOW - Run the build job and the test job
+#   build-and-deploy:
+#     jobs:
+#       - build
+
+  # DEPLOY WORKFLOW - Depending on the success of the build-and-test workflow on the master branch, run the deploy job
+  # Commented out right now to AWS free trial upload limits
+  # deploy:
+  #   jobs:
+  #     - deploy
+  #         requires:
+  #           - build
+    # filters:
+    #   branches:
+    #     only: master
+
+
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
+  version: 2
+  build-and-deploy:
     jobs:
-      - welcome/run
+      - build 
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:  master
