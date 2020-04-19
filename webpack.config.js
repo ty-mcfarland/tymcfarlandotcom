@@ -30,8 +30,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      ifDev: ifDevelopment(),
-      ifProd: ifProduction(),
+      ifDev: ifDevelopment(true, false),
+      ifProd: ifProduction(true, false),
       template: './index.html'
     })
   ],
