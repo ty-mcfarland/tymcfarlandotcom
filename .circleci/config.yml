@@ -15,6 +15,7 @@ jobs:
       - image: circleci/node:12-browsers
         environment:
           CHROME_BIN: "/usr/bin/google-chrome"
+          NODE_ENV: "production"
     steps:
       - checkout
       # Restore local dependencies from cache
