@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "test": "test",
-    "build": "NODE_ENV=development && rm -rf dist && webpack --mode=development",
-    "build:prod": "NODE_ENV=production && webpack --mode=production",
+    "build": "export NODE_ENV=development && rm -rf dist && webpack --mode=development",
+    "build:prod": "export NODE_ENV=production && webpack --mode=production",
     "start": "webpack-dev-server"
   },
   "repository": {
