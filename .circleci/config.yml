@@ -28,7 +28,7 @@ jobs:
             - v1-dist-
       - run:
           name: Deploy to Firebase
-          command: NODE_ENV=production && ./node_modules/.bin/firebase deploy --token "$FIREBASE_TOKEN" --only hosting
+          command: ./node_modules/.bin/firebase deploy --token "$FIREBASE_TOKEN" --only hosting
     
 
 
@@ -65,6 +65,10 @@ jobs:
               else
                   npm run build
               fi
+      - run:
+          name: Echo node env
+          command: echo ${NODE_ENV}
+
       # Cache the node_modules folder for the deploy job
       - save_cache:
           key: v1-dependencies-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
