@@ -8,12 +8,17 @@
     "sourceMap": true,
     "baseUrl": "/",
     "paths": {
-      "*": [
-        "node_modules/*"
+      "assets/*": [
+        "src/assets/*"
       ]
     }
   },
   "include": [
+    "webpack.configljs",
     "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }
