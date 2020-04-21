@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "module": "amd",
-    "target": "es5",
+    "module": "commonjs",
+    "target": "es6",
     "jsx": "react",
     "allowJs": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "sourceMap": true,
     "baseUrl": "/",
@@ -16,7 +17,6 @@
     }
   },
   "include": [
-    "webpack.config.js",
     "src/**/*"
   ],
   "exclude": [
