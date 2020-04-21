@@ -16,7 +16,6 @@
     }
   },
   "include": [
-    "webpack.config.js",
     "src/**/*"
   ],
   "exclude": [

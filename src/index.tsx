@@ -3,7 +3,7 @@ import "firebase/analytics";
 
 // Add the Firebase products that you want to use
 import "firebase/auth";
-import { HeaderComponent } from './../node_modules/tmc-component-library/src'
+import { HeaderComponent } from 'tmc-component-library'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
@@ -13,7 +13,7 @@ class AppComponent extends React.Component {
     }
     public render() {
         return(
-            <HeaderComponent />
+            <HeaderComponent text="This is a header" />
         )
     }
 }
