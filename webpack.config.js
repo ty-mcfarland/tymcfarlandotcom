@@ -7,6 +7,7 @@ const { ifDevelopment, ifNotTest, ifProduction } = getIfUtils(NODE_ENV)
 
 module.exports = {
   entry: path.resolve(__dirname, 'src/index.tsx'),
+  target: 'node',
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
@@ -17,8 +18,8 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
+        loader: 'ts-loader',
+        exclude: /node_modules/
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
@@ -49,6 +50,7 @@ module.exports = {
     ],
   },
   resolve: {
+    modules: ['node_modules', 'src'],
     alias: {
       assets: path.resolve(__dirname, 'src/assets/')
     },
@@ -68,7 +70,7 @@ module.exports = {
     })
   ],
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist')
   },
 };
